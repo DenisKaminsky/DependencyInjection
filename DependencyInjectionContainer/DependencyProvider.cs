@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace DependencyInjectionContainer
 {
-    class DependencyProvider
+    public class DependencyProvider
     {
+        private DependenciesConfiguration _configuration;
+
+        public DependencyProvider(DependenciesConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
     }
 }

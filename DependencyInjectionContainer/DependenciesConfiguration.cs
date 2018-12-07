@@ -7,14 +7,14 @@ namespace DependencyInjectionContainer
 {
     public class DependenciesConfiguration
     {
-        private ConcurrentDictionary<Type, List<Type>> dictionary;
+        public ConcurrentDictionary<Type, List<Type>> _dictionary {get; }
 
         public DependenciesConfiguration()
         {
-            dictionary = new ConcurrentDictionary<Type, List<Type>>();
+            _dictionary = new ConcurrentDictionary<Type, List<Type>>();
         }
 
-        public bool Register<TDependency, TImplementation>()
+        public bool Register<TDependency, TImplementation>() where TDependency : class where TImplementation : class
         {
             return Register(typeof(TDependency), typeof(TImplementation));
         }
@@ -23,13 +23,13 @@ namespace DependencyInjectionContainer
         {
             if (!tImplementation.IsInterface && !tImplementation.IsAbstract)
             {
-                if (!dictionary.ContainsKey(tDependency))
+                if (!_dictionary.ContainsKey(tDependency))
                 {
-                    dictionary.TryAdd(tDependency, new List<Type>());
+                    _dictionary.TryAdd(tDependency, new List<Type>());
                 }
-                if (!dictionary[tDependency].Contains(tImplementation))
+                if (!_dictionary[tDependency].Contains(tImplementation))
                 {
-                    dictionary[tDependency].Add(tImplementation);
+                    _dictionary[tDependency].Add(tImplementation);
                 }
             }
             else
