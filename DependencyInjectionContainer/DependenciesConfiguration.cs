@@ -7,11 +7,11 @@ namespace DependencyInjectionContainer
 {
     public class DependenciesConfiguration
     {
-        public ConcurrentDictionary<Type, List<Type>> _dictionary {get; }
+        public ConcurrentDictionary<Type, List<Type>> dictionary {get; }
 
         public DependenciesConfiguration()
         {
-            _dictionary = new ConcurrentDictionary<Type, List<Type>>();
+            dictionary = new ConcurrentDictionary<Type, List<Type>>();
         }
 
         public bool Register<TDependency, TImplementation>() where TDependency : class where TImplementation : class
@@ -23,13 +23,13 @@ namespace DependencyInjectionContainer
         {
             if (!tImplementation.IsInterface && !tImplementation.IsAbstract)
             {
-                if (!_dictionary.ContainsKey(tDependency))
+                if (!dictionary.ContainsKey(tDependency))
                 {
-                    _dictionary.TryAdd(tDependency, new List<Type>());
+                    dictionary.TryAdd(tDependency, new List<Type>());
                 }
-                if (!_dictionary[tDependency].Contains(tImplementation))
+                if (!dictionary[tDependency].Contains(tImplementation))
                 {
-                    _dictionary[tDependency].Add(tImplementation);
+                    dictionary[tDependency].Add(tImplementation);
                 }
             }
             else
