@@ -36,5 +36,33 @@ namespace DependencyInjectionContainer
             }
             return true;
         }
+
+        public T Resolve<T>()
+        {
+            Type t = typeof(T);
+
+            if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            {
+                return (T)CreateGeneric(t);
+            }
+        }
+
+        private object CreateGeneric(Type t)
+        {
+            List<Type> implementations;
+            Type tResolve = t.GetGenericArguments()[0];
+            
+            _configuration.dictionary.TryGetValue(tResolve,out implementations);
+            if (implementations != null)
+            {
+                var result = Activator.CreateInstance(typeof(List<>).MakeGenericType(tResolve));
+                foreach (Type tImplementation in implementations)
+                {
+                    
+                }
+                return result;
+            }
+            return null;           
+        }
     }
 }
