@@ -23,13 +23,20 @@ namespace DependencyInjectionContainer
         {
             if (!tImplementation.IsInterface && !tImplementation.IsAbstract)
             {
-
+                if (!dictionary.ContainsKey(tDependency))
+                {
+                    dictionary.TryAdd(tDependency, new List<Type>());
+                }
+                if (!dictionary[tDependency].Contains(tImplementation))
+                {
+                    dictionary[tDependency].Add(tImplementation);
+                }
             }
             else
             {
                 return false;
             }
-            return true;
+            return true;            
         }
     }
 }
