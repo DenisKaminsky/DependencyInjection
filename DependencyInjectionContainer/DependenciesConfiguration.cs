@@ -7,36 +7,39 @@ namespace DependencyInjectionContainer
 {
     public class DependenciesConfiguration
     {
-        public ConcurrentDictionary<Type, List<Type>> dictionary {get; }
+        public ConcurrentDictionary<Type, List<Type>> dependencies {get; }
+        public ConcurrentDictionary<Type, List<bool>> isSingletonDictionary { get;}
 
         public DependenciesConfiguration()
         {
-            dictionary = new ConcurrentDictionary<Type, List<Type>>();
+            dependencies = new ConcurrentDictionary<Type, List<Type>>();
+            isSingletonDictionary = new ConcurrentDictionary<Type, List<bool>>();
         }
 
-        public bool Register<TDependency, TImplementation>() where TDependency : class where TImplementation : class
+        public bool Register<TDependency, TImplementation>(bool isSingleton)
         {
-            return Register(typeof(TDependency), typeof(TImplementation));
+            return Register(typeof(TDependency), typeof(TImplementation),isSingleton);
         }
 
-        public bool Register(Type tDependency, Type tImplementation)
+        public bool Register(Type tDependency, Type tImplementation,bool isSingleton)
         {
+            bool result = true;
+
             if (!tImplementation.IsInterface && !tImplementation.IsAbstract)
             {
-                if (!dictionary.ContainsKey(tDependency))
+                dependencies.TryAdd(tDependency, new List<Type>());
+                
+                if (!dependencies[tDependency].Contains(tImplementation))
                 {
-                    dictionary.TryAdd(tDependency, new List<Type>());
-                }
-                if (!dictionary[tDependency].Contains(tImplementation))
-                {
-                    dictionary[tDependency].Add(tImplementation);
+                    dependencies[tDependency].Add(tImplementation);
+                    isSingletonDictionary[tDependency].Add(isSingleton);
                 }
             }
             else
             {
-                return false;
+                result = false;
             }
-            return true;            
+            return result;            
         }
     }
 }

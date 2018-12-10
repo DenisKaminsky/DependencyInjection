@@ -17,11 +17,11 @@ namespace DependencyInjectionContainer
 
         private bool ValidateConfiguration(DependenciesConfiguration configuration)
         {
-            foreach (Type tDependency in configuration.dictionary.Keys)
+            foreach (Type tDependency in configuration.dependencies.Keys)
             {
                 if (!tDependency.IsValueType)
                 {
-                    foreach (Type tImplementation in configuration.dictionary[tDependency])
+                    foreach (Type tImplementation in configuration.dependencies[tDependency])
                     {
                         if (tImplementation.IsAbstract || tImplementation.IsInterface)
                         {
@@ -52,13 +52,13 @@ namespace DependencyInjectionContainer
             List<Type> implementations;
             Type tResolve = t.GetGenericArguments()[0];
             
-            _configuration.dictionary.TryGetValue(tResolve,out implementations);
+            _configuration.dependencies.TryGetValue(tResolve,out implementations);
             if (implementations != null)
             {
                 var result = Activator.CreateInstance(typeof(List<>).MakeGenericType(tResolve));
                 foreach (Type tImplementation in implementations)
                 {
-                    
+                    //add
                 }
                 return result;
             }

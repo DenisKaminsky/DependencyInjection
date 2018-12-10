@@ -31,7 +31,6 @@ namespace DependencyInjectionContainer
         static void Main(string[] args)
         {
             DependenciesConfiguration c = new DependenciesConfiguration();
-
         }
     }
 }
