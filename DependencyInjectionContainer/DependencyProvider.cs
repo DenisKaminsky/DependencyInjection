@@ -12,7 +12,14 @@ namespace DependencyInjectionContainer
 
         public DependencyProvider(DependenciesConfiguration configuration)
         {
-            _configuration = configuration;
+            if (ValidateConfiguration(configuration))
+            {
+                _configuration = configuration;
+            }
+            else
+            {
+                throw new Exception("Configuration is not valid");
+            }
         }
 
         private bool ValidateConfiguration(DependenciesConfiguration configuration)
@@ -23,7 +30,7 @@ namespace DependencyInjectionContainer
                 {
                     foreach (Type tImplementation in configuration.dependencies[tDependency])
                     {
-                        if (tImplementation.IsAbstract || tImplementation.IsInterface)
+                        if (tImplementation.IsAbstract || tImplementation.IsInterface || !tDependency.IsAssignableFrom(tImplementation))
                         {
                             return false;
                         }
@@ -37,7 +44,7 @@ namespace DependencyInjectionContainer
             return true;
         }
 
-        public T Resolve<T>()
+        public T Resolve<T>() where T: class
         {
             Type t = typeof(T);
 

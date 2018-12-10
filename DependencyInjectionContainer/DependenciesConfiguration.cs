@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DependencyInjectionContainer
 {
@@ -16,30 +15,20 @@ namespace DependencyInjectionContainer
             isSingletonDictionary = new ConcurrentDictionary<Type, List<bool>>();
         }
 
-        public bool Register<TDependency, TImplementation>(bool isSingleton)
+        public void Register<TDependency, TImplementation>(bool isSingleton)
         {
-            return Register(typeof(TDependency), typeof(TImplementation),isSingleton);
+            Register(typeof(TDependency), typeof(TImplementation),isSingleton);
         }
 
-        public bool Register(Type tDependency, Type tImplementation,bool isSingleton)
+        public void Register(Type tDependency, Type tImplementation,bool isSingleton)
         {
-            bool result = true;
-
-            if (!tImplementation.IsInterface && !tImplementation.IsAbstract)
-            {
-                dependencies.TryAdd(tDependency, new List<Type>());
+            dependencies.TryAdd(tDependency, new List<Type>());
                 
-                if (!dependencies[tDependency].Contains(tImplementation))
-                {
-                    dependencies[tDependency].Add(tImplementation);
-                    isSingletonDictionary[tDependency].Add(isSingleton);
-                }
-            }
-            else
+            if (!dependencies[tDependency].Contains(tImplementation))
             {
-                result = false;
-            }
-            return result;            
+                dependencies[tDependency].Add(tImplementation);
+                isSingletonDictionary[tDependency].Add(isSingleton);
+            }          
         }
     }
 }
