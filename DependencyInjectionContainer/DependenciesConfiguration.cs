@@ -23,7 +23,8 @@ namespace DependencyInjectionContainer
         public void Register(Type tDependency, Type tImplementation,bool isSingleton)
         {
             dependencies.TryAdd(tDependency, new List<Type>());
-                
+            isSingletonDictionary.TryAdd(tDependency, new List<bool>());
+
             if (!dependencies[tDependency].Contains(tImplementation))
             {
                 dependencies[tDependency].Add(tImplementation);

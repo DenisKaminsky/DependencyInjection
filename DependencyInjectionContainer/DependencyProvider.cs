@@ -56,20 +56,31 @@ namespace DependencyInjectionContainer
 
         private object CreateGeneric(Type t)
         {
+            object result = null;
             List<Type> implementations;
             Type tResolve = t.GetGenericArguments()[0];
             
             _configuration.dependencies.TryGetValue(tResolve,out implementations);
             if (implementations != null)
             {
-                var result = Activator.CreateInstance(typeof(List<>).MakeGenericType(tResolve));
+                result = Activator.CreateInstance(typeof(List<>).MakeGenericType(tResolve));
                 foreach (Type tImplementation in implementations)
                 {
                     //add
                 }
-                return result;
             }
-            return null;           
+            return result;           
+        }
+        
+        //here will be validation for singleton
+        private object GetInstance(Type t)
+        {
+
+        }
+
+        private object Create(Type t)
+        {
+
         }
     }
 }
