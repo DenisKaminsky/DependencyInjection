@@ -20,4 +20,9 @@ namespace DependencyInjectionContainer.Exceptions
     {
         public CycleDependencyException(string message) : base(message) { }
     }
+
+    public class TypeNotRegisterException : Exception
+    {
+        public TypeNotRegisterException(string message) : base(message) { }
+    }
 }

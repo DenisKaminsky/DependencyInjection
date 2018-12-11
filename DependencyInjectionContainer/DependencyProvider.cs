@@ -12,6 +12,7 @@ namespace DependencyInjectionContainer
     {
         private DependenciesConfiguration _configuration;
         private readonly ConcurrentStack<Type> _stack;
+        private Type _currentGenericType;
 
         public DependencyProvider(DependenciesConfiguration configuration)
         {
@@ -72,7 +73,19 @@ namespace DependencyInjectionContainer
             if (implementations != null)
                 return GetInstance(implementations.First());
             else
-                return null;
+            {
+                //open generic
+                Type genericDefinition;
+                if (t.IsGenericType)
+                {
+                    _currentGenericType = t;
+                    genericDefinition = t.GetGenericTypeDefinition();                    
+                    _configuration.dependencies.TryGetValue(genericDefinition, out implementations);
+                    if (implementations != null)
+                        return GetInstance(implementations.First());
+                }
+                throw new TypeNotRegisterException("Unknown type " + t.Name);
+            }
         }
 
         //crete list of interfaces
@@ -91,6 +104,8 @@ namespace DependencyInjectionContainer
                     ((IList)result).Add(GetInstance(tImplementation));
                 }
             }
+            else
+                throw new TypeNotRegisterException("Unknown type "+t.Name);
             return result;           
         }
         
@@ -115,10 +130,10 @@ namespace DependencyInjectionContainer
             {
                 _stack.Push(t);
 
-                /*if (t.IsGenericTypeDefinition)
+                if (t.IsGenericTypeDefinition)
                 {
-                    t = t.MakeGenericType(t.GenericTypeArguments);
-                }*/
+                    t = t.MakeGenericType(_currentGenericType.GenericTypeArguments);
+                }
 
                 ConstructorInfo constructor = GetRightConstructor(t);
 

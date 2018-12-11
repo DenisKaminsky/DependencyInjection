@@ -26,7 +26,24 @@ namespace DependencyInjectionContainer
             if (example != null)
                 example.Print();
         }
-    }    
+    }
+
+    public class ClassForExample66<T> where T:IExample
+    {
+        public T example { get; set; }
+
+        public ClassForExample66(T example)
+        {
+            this.example = example;
+        }
+
+        public void Print()
+        {
+            Console.WriteLine("I am EXAMPLE 66");
+            if (example != null)
+                example.Print();
+        }
+    }
 
     public class ClassForExample2
     {
