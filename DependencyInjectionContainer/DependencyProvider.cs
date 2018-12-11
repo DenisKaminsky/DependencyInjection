@@ -93,10 +93,17 @@ namespace DependencyInjectionContainer
             return result;           
         }
         
-        //here will be validation for singleton
+        //here validation for singleton
         private object GetInstance(ImplementationInfo tImplementation)
         {
-
+            if (tImplementation.isSingleton)
+            {
+                return tImplementation.GetInstance(this);
+            }
+            else
+            {
+                return Create(tImplementation.implementationType);
+            }
         }
               
         //here t is implementation  

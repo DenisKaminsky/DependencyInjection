@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DependencyInjectionContainer
 {
@@ -21,7 +17,7 @@ namespace DependencyInjectionContainer
             _instance = null;
         }
 
-        public object getInstance(DependencyProvider provider)
+        public object GetInstance(DependencyProvider provider)
         {
             if (_instance == null)
             {
