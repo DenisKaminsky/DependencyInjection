@@ -84,7 +84,8 @@ namespace DependencyInjectionUnitTest
             Assert.IsNotNull(actual);
             Assert.AreEqual(2, ((IList)actual).Count);
         }
-
+        
+        //Try to add dependency : interface -> interface
         [TestMethod]
         public void ImplementationIsInterfaceTest()
         {
@@ -104,6 +105,7 @@ namespace DependencyInjectionUnitTest
             }
         }
 
+        //Try to creat not registred type
         [TestMethod]
         public void NotRegisteredTypeTest()
         {
@@ -118,6 +120,26 @@ namespace DependencyInjectionUnitTest
                 Assert.IsNotNull(actual);
             }
             catch (TypeNotRegisterException ex)
+            {
+                Assert.IsNotNull(ex.Message);
+            }
+        }
+
+        //check if TImlementaton implements TDependency
+        [TestMethod]
+        public void IncompatibilityTest()
+        {
+            DependencyProvider provider;
+            DependenciesConfiguration config = new DependenciesConfiguration();
+
+            config.Register<ClassForExample, ClassForExample3>(true);
+            try
+            {
+                provider = new DependencyProvider(config);
+                ClassForExample2 actual = provider.Resolve<ClassForExample2>();
+                Assert.IsNotNull(actual);
+            }
+            catch (ConfigurationValidationException ex)
             {
                 Assert.IsNotNull(ex.Message);
             }
