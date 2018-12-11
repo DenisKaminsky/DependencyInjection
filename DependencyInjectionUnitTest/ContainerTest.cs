@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DependencyInjectionContainer;
 using DependencyInjectionContainer.Exceptions;
@@ -8,6 +10,7 @@ namespace DependencyInjectionUnitTest
     [TestClass]
     public class ContainerTest
     {
+        //just create dependency
         [TestMethod]
         public void CreateDependencyTest()
         {
@@ -22,6 +25,7 @@ namespace DependencyInjectionUnitTest
             Assert.IsNotNull(actual);
         }
 
+        //compare objects links, returned by provider
         [TestMethod]
         public void SingletonTest()
         {
@@ -36,6 +40,7 @@ namespace DependencyInjectionUnitTest
             Assert.AreEqual(expected, actual);
         }
 
+        //compare objects links, returned by provider
         [TestMethod]
         public void InstancePerDependencyTest()
         {
@@ -50,6 +55,7 @@ namespace DependencyInjectionUnitTest
             Assert.AreNotEqual(expected, actual);
         }      
 
+        //implementation == dependency
         [TestMethod]
         public void AsSelfRegistrationTest()
         {
@@ -62,5 +68,24 @@ namespace DependencyInjectionUnitTest
 
             Assert.IsNotNull(actual);
         }
+
+        //return some implementations of one dependency
+        [TestMethod]
+        public void GetSomeImplementationsTest()
+        {
+            DependencyProvider provider;
+            DependenciesConfiguration config = new DependenciesConfiguration();
+
+            config.Register<IExample, ClassForExample>(true);
+            config.Register<IExample, ClassForExample2>(false);
+            provider = new DependencyProvider(config);
+            IEnumerable<IExample> actual = provider.Resolve<IEnumerable<IExample>>();
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(2, ((IList)actual).Count);
+        }
+
+
+
     }
 }
