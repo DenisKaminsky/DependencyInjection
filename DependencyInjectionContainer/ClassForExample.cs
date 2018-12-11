@@ -2,6 +2,39 @@
 
 namespace DependencyInjectionContainer
 {
+    public interface IRepository
+    {
+        void Print();
+    }
+
+    public class MySQLRepository: IRepository
+    {
+        public void Print()
+        {
+            Console.WriteLine("THIS IS MYSQL");
+        }
+    }
+
+    public interface IService<TRepository> where TRepository : IRepository
+    {
+        void INVOKE();
+    }
+
+    public class ServiceImpl<TRepository> : IService<TRepository>
+    where TRepository : IRepository
+    {
+        TRepository rep;
+        public ServiceImpl(TRepository repository)
+        {
+            rep = repository;
+        }
+
+        public void INVOKE()
+        {
+            rep.Print();
+        }
+    }
+
     public interface IExample
     {
         void Print();
@@ -45,7 +78,7 @@ namespace DependencyInjectionContainer
         }
     }
 
-    public class ClassForExample2
+    public class ClassForExample2:IExample
     {
         public ClassForExample3 example { get; set; }
 
