@@ -4,28 +4,29 @@ namespace DependencyInjectionContainer
 {
     public interface IRepository
     {
-        void Print();
+        int GetNum();
     }
 
     public class MySQLRepository: IRepository
     {
-        public void Print()
+        public int GetNum()
         {
-            Console.WriteLine("THIS IS MYSQL");
+            return 5;
         }
     }
 
     public class ServiceImpl<TRepository> where TRepository : IRepository   
     {
         TRepository rep;
+
         public ServiceImpl(TRepository repository)
         {
             rep = repository;
         }
 
-        public void Print()
+        public int GetNum()
         {
-            rep.Print();
+            return rep.GetNum();
         }
     }
 

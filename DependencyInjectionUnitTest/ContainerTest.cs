@@ -145,6 +145,34 @@ namespace DependencyInjectionUnitTest
             }
         }
 
+        [TestMethod]
+        public void GenericTypeTest()
+        {
+            DependencyProvider provider;
+            DependenciesConfiguration config = new DependenciesConfiguration();
+
+            config.Register<IRepository, MySQLRepository>(true);
+            config.Register<ServiceImpl<IRepository>, ServiceImpl<IRepository>>(false);            
+            provider = new DependencyProvider(config);
+            ServiceImpl<IRepository> actual = provider.Resolve<ServiceImpl<IRepository>>();
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(5, actual.GetNum());
+        }
+
+        [TestMethod]
+        public void OpenGenericTypeTest()
+        {
+            DependencyProvider provider;
+            DependenciesConfiguration config = new DependenciesConfiguration();
+
+            config.Register<IRepository, MySQLRepository>(false);
+            config.Register(typeof(ServiceImpl<>), typeof(ServiceImpl<>), false);
+            provider = new DependencyProvider(config);
+            ServiceImpl<IRepository> actual = provider.Resolve<ServiceImpl<IRepository>>();
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(5, actual.GetNum());
+        }
+
 
     }
 }

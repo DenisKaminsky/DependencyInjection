@@ -20,7 +20,7 @@ namespace DependencyInjectionContainer
             {
                 DependencyProvider p = new DependencyProvider(c);
                 ServiceImpl<MySQLRepository> example = p.Resolve<ServiceImpl<MySQLRepository>>();
-                example.Print();
+                example.GetNum();
             }
             catch (ConfigurationValidationException ex)
             {
