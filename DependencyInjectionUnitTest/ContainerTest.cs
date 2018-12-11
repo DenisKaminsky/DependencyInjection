@@ -144,7 +144,7 @@ namespace DependencyInjectionUnitTest
                 Assert.IsNotNull(ex.Message);
             }
         }
-
+        
         [TestMethod]
         public void GenericTypeTest()
         {
@@ -173,6 +173,21 @@ namespace DependencyInjectionUnitTest
             Assert.AreEqual(5, actual.GetNum());
         }
 
+        [TestMethod]
+        public void CycleDependencyTest()
+        {
+            DependencyProvider provider;
+            DependenciesConfiguration config = new DependenciesConfiguration();
+
+            config.Register<ClassForExample, ClassForExample>(false);
+            config.Register<ClassForExample2, ClassForExample2>(true);
+            config.Register<ClassForExample3, ClassForExample3>(true);
+            
+            provider = new DependencyProvider(config);
+            ClassForExample actual = provider.Resolve<ClassForExample>();
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(null, actual.example.example.example);            
+        }
 
     }
 }

@@ -149,7 +149,8 @@ namespace DependencyInjectionContainer
             }
             else
             {
-                throw new CycleDependencyException("Cycle dependency ERROR!");
+                result = null;
+                //throw new CycleDependencyException("Cycle dependency ERROR!");
             }
 
             return result;
