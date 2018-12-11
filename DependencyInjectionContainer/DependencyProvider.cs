@@ -56,6 +56,10 @@ namespace DependencyInjectionContainer
             {
                 return (T)CreateGeneric(t);
             }
+            else
+            {
+                return (T)GetInstance(t);
+            }
         }
 
         private object CreateGeneric(Type t)
@@ -82,6 +86,7 @@ namespace DependencyInjectionContainer
 
         }
                 
+        //t - is implementation type
         private object Create(Type t)
         {
             if (!_stack.Contains(t))
@@ -104,9 +109,33 @@ namespace DependencyInjectionContainer
             }
         }
 
-        private ConstructorInfo GetRightConstructor()
+        private ConstructorInfo GetRightConstructor(Type t)
         {
+            ConstructorInfo result = null;
+            ConstructorInfo[] constructors = t.GetConstructors();
+            bool isRight;
 
+            foreach (ConstructorInfo constructor in constructors)
+            {
+                ParameterInfo[] parameters = constructor.GetParameters();
+
+                isRight = true;
+                foreach (ParameterInfo parameter in parameters)
+                {
+                    if (!_configuration.dependencies.ContainsKey(parameter.ParameterType))
+                    {
+                        isRight = false;
+                        break;
+                    }
+                }
+
+                if (isRight)
+                {
+                    result = constructor;
+                    break;
+                }
+            }
+            return result;
         }
 
         private ParameterInfo[] GetConstructorParameters()
