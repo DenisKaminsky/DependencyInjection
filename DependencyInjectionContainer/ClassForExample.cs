@@ -15,13 +15,7 @@ namespace DependencyInjectionContainer
         }
     }
 
-    public interface IService<TRepository> where TRepository : IRepository
-    {
-        void INVOKE();
-    }
-
-    public class ServiceImpl<TRepository> : IService<TRepository>
-    where TRepository : IRepository
+    public class ServiceImpl<TRepository> where TRepository : IRepository   
     {
         TRepository rep;
         public ServiceImpl(TRepository repository)
@@ -29,7 +23,7 @@ namespace DependencyInjectionContainer
             rep = repository;
         }
 
-        public void INVOKE()
+        public void Print()
         {
             rep.Print();
         }
@@ -60,24 +54,7 @@ namespace DependencyInjectionContainer
                 example.Print();
         }
     }
-
-    public class ClassForExample66<T> where T:IExample
-    {
-        public T example { get; set; }
-
-        public ClassForExample66(T example)
-        {
-            this.example = example;
-        }
-
-        public void Print()
-        {
-            Console.WriteLine("I am EXAMPLE 66");
-            if (example != null)
-                example.Print();
-        }
-    }
-
+       
     public class ClassForExample2:IExample
     {
         public ClassForExample3 example { get; set; }
