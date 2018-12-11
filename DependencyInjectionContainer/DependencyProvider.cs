@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using System.Collections;
+using DependencyInjectionContainer.Exceptions;
 
 namespace DependencyInjectionContainer
 {
@@ -21,7 +22,7 @@ namespace DependencyInjectionContainer
             }
             else
             {
-                throw new Exception("Configuration is not valid!");
+                throw new ConfigurationValidationException("Configuration is not valid!");
             }
         }
 
@@ -127,13 +128,13 @@ namespace DependencyInjectionContainer
                 }
                 else
                 {
-                    throw new Exception("Cannot find right constructor!");
+                    throw new ConstructorNotFoundException("Cannot find right constructor!");
                 }
                 _stack.TryPop(out t);
             }
             else
             {
-                throw new Exception("Cycle dependency ERROR!");
+                throw new CycleDependencyException("Cycle dependency ERROR!");
             }
 
             return result;
