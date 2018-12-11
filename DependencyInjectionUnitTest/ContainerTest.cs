@@ -21,5 +21,31 @@ namespace DependencyInjectionUnitTest
 
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void InstancePerDependencyTest()
+        {
+            DependencyProvider provider;
+            DependenciesConfiguration config = new DependenciesConfiguration();
+
+            config.Register<IExample, ClassForExample>(false);
+            provider = new DependencyProvider(config);
+            IExample expected = provider.Resolve<IExample>();
+            IExample actual = provider.Resolve<IExample>();
+
+            Assert.AreNotEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void CreateDependencyTest()
+        {
+
+        }
+
+        [TestMethod]
+        public void AsSelfRegistrationTest()
+        {
+
+        }
     }
 }
