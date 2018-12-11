@@ -85,6 +85,43 @@ namespace DependencyInjectionUnitTest
             Assert.AreEqual(2, ((IList)actual).Count);
         }
 
+        [TestMethod]
+        public void ImplementationIsInterfaceTest()
+        {
+            DependencyProvider provider;
+            DependenciesConfiguration config = new DependenciesConfiguration();
+
+            config.Register<IExample, IExample>(true);
+            try
+            {
+                provider = new DependencyProvider(config);
+                IExample actual = provider.Resolve<IExample>();
+                Assert.IsNotNull(actual);
+            }
+            catch (ConfigurationValidationException ex)
+            {
+                Assert.IsNotNull(ex.Message);
+            }
+        }
+
+        [TestMethod]
+        public void NotRegisteredTypeTest()
+        {
+            DependencyProvider provider;
+            DependenciesConfiguration config = new DependenciesConfiguration();
+
+            config.Register<IExample, ClassForExample>(true);
+            try
+            {
+                provider = new DependencyProvider(config);
+                ClassForExample2 actual = provider.Resolve<ClassForExample2>();
+                Assert.IsNotNull(actual);
+            }
+            catch (TypeNotRegisterException ex)
+            {
+                Assert.IsNotNull(ex.Message);
+            }
+        }
 
 
     }
