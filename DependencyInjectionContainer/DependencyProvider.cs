@@ -100,7 +100,7 @@ namespace DependencyInjectionContainer
         }
               
         //here t is implementation  
-        private object Create(Type t)
+        public object Create(Type t)
         {
             object result;
             if (!_stack.Contains(t))
