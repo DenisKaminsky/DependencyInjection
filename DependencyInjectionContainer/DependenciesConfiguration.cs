@@ -6,13 +6,11 @@ namespace DependencyInjectionContainer
 {
     public class DependenciesConfiguration
     {
-        public ConcurrentDictionary<Type, List<Type>> dependencies {get; }
-        public ConcurrentDictionary<Type, List<bool>> isSingletonDictionary { get;}
+        public ConcurrentDictionary<Type, List<ImplementationInfo>> dependencies {get; }
 
         public DependenciesConfiguration()
         {
-            dependencies = new ConcurrentDictionary<Type, List<Type>>();
-            isSingletonDictionary = new ConcurrentDictionary<Type, List<bool>>();
+            dependencies = new ConcurrentDictionary<Type, List<ImplementationInfo>>();
         }
 
         public void Register<TDependency, TImplementation>(bool isSingleton)
@@ -22,13 +20,21 @@ namespace DependencyInjectionContainer
 
         public void Register(Type tDependency, Type tImplementation,bool isSingleton)
         {
-            dependencies.TryAdd(tDependency, new List<Type>());
-            isSingletonDictionary.TryAdd(tDependency, new List<bool>());
+            bool searchResult;
 
-            if (!dependencies[tDependency].Contains(tImplementation))
+            dependencies.TryAdd(tDependency, new List<ImplementationInfo>());
+            searchResult = false;
+            foreach (ImplementationInfo implementation in dependencies[tDependency])
             {
-                dependencies[tDependency].Add(tImplementation);
-                isSingletonDictionary[tDependency].Add(isSingleton);
+                if (implementation.implementationType == tImplementation)
+                {
+                    searchResult = true;
+                    break;
+                }
+            }
+            if (!searchResult)
+            {
+                dependencies[tDependency].Add(new ImplementationInfo(tImplementation,isSingleton));
             }          
         }
     }

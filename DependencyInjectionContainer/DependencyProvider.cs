@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections;
 
 namespace DependencyInjectionContainer
 {
@@ -26,14 +25,17 @@ namespace DependencyInjectionContainer
             }
         }
 
+        //valudation for configuration
         private bool ValidateConfiguration(DependenciesConfiguration configuration)
         {
             foreach (Type tDependency in configuration.dependencies.Keys)
             {
                 if (!tDependency.IsValueType)
                 {
-                    foreach (Type tImplementation in configuration.dependencies[tDependency])
+                    foreach (ImplementationInfo dependency in configuration.dependencies[tDependency])
                     {
+                        Type tImplementation = dependency.implementationType;
+
                         if (tImplementation.IsAbstract || tImplementation.IsInterface || !tDependency.IsAssignableFrom(tImplementation))
                         {
                             return false;
@@ -47,48 +49,60 @@ namespace DependencyInjectionContainer
             }
             return true;
         }
-
+        
         public T Resolve<T>() where T: class
         {
             Type t = typeof(T);
 
-            if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-            {
-                return (T)CreateGeneric(t);
-            }
-            else
-            {
-                return (T)GetInstance(t);
-            }
+            return (T)Resolve(t);
         }
 
+        //resolve method ( t - interface)
+        private object Resolve(Type t)
+        {
+            List<ImplementationInfo> implementations;
+            //IEnumerable of interfaces
+            if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            {
+                return CreateGeneric(t);
+            }
+            //single implemenation
+            _configuration.dependencies.TryGetValue(t, out implementations);
+            if (implementations != null)
+                return GetInstance(implementations.First());
+            else
+                return null;
+        }
+
+        //crete list of interfaces
         private object CreateGeneric(Type t)
         {
             object result = null;
-            List<Type> implementations;
+            List<ImplementationInfo> implementations;
             Type tResolve = t.GetGenericArguments()[0];
             
             _configuration.dependencies.TryGetValue(tResolve,out implementations);
             if (implementations != null)
             {
                 result = Activator.CreateInstance(typeof(List<>).MakeGenericType(tResolve));
-                foreach (Type tImplementation in implementations)
+                foreach (ImplementationInfo tImplementation in implementations)
                 {
-                    //add
+                    ((IList)result).Add(GetInstance(tImplementation));
                 }
             }
             return result;           
         }
         
         //here will be validation for singleton
-        private object GetInstance(Type t)
+        private object GetInstance(ImplementationInfo tImplementation)
         {
 
         }
-                
-        //t - is implementation type
+              
+        //here t is implementation  
         private object Create(Type t)
         {
+            object result;
             if (!_stack.Contains(t))
             {
                 _stack.Push(t);
@@ -98,15 +112,24 @@ namespace DependencyInjectionContainer
                     t = t.MakeGenericType(t.GenericTypeArguments);
                 }*/
 
-                var constructors = t.GetConstructors().OrderByDescending
-                    (x => x.GetParameters().Length).ToArray();
-                
+                ConstructorInfo constructor = GetRightConstructor(t);
+
+                if (constructor != null)
+                {
+                    result = constructor.Invoke();
+                }
+                else
+                {
+                    throw new Exception("Cannot find right constructor!");
+                }
                 _stack.TryPop(out t);
             }
             else
             {
                 throw new Exception("Cycle dependency ERROR!");
             }
+
+            return result;
         }
 
         private ConstructorInfo GetRightConstructor(Type t)
@@ -138,9 +161,14 @@ namespace DependencyInjectionContainer
             return result;
         }
 
-        private ParameterInfo[] GetConstructorParameters()
+        private object[] GetConstructorParametersValues(ParameterInfo[] parameters)
         {
+            object[] result = new object[parameters.Length];
 
+            for (int i=0; i<parameters.Length; i++)
+            {
+                result[i] = 
+            }
         }
 
     }
