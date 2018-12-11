@@ -123,7 +123,7 @@ namespace DependencyInjectionContainer
 
                 if (constructor != null)
                 {
-                    result = constructor.Invoke();
+                    result = constructor.Invoke(GetConstructorParametersValues(constructor.GetParameters()));
                 }
                 else
                 {
@@ -174,8 +174,9 @@ namespace DependencyInjectionContainer
 
             for (int i=0; i<parameters.Length; i++)
             {
-                result[i] = 
+                result[i] = Resolve(parameters[i].ParameterType);
             }
+            return result;
         }
 
     }

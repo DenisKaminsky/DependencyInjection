@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DependenciesConfiguration.cs" />
+    <Compile Include="ImplementationInfo.cs" />
     <Compile Include="DependencyProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
